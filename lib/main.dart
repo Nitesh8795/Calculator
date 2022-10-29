@@ -1,5 +1,4 @@
-import 'package:calculator/screens/mainScreen.dart';
-import 'package:flutter/material.dart';
+import 'package:calculator/libraries/lib.dart';
 
 void main() {
   runApp(new MaterialApp(home: calculator()));

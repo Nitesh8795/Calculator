@@ -1,5 +1,4 @@
-import 'package:calculator/components/my_button.dart';
-import 'package:flutter/material.dart';
+import 'package:calculator/libraries/lib.dart';
 
 class calculator extends StatefulWidget {
   const calculator({Key? key}) : super(key: key);
@@ -21,16 +20,37 @@ class _calculatorState extends State<calculator> {
           child: Column(
             children: [
               Expanded(
-                child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 30, right: 15, left: 15),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        userInput.toString(),
-                        style: TextStyle(fontSize: 40.0, color: Colors.white),
+                      Align(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                            child: Text(
+                              userInput.toString(),
+                              style:
+                                  TextStyle(fontSize: 30.0, color: Colors.white),
+                            ),
+                        ),
+                        alignment: Alignment.bottomRight,
                       ),
-                      Text(
-                        finalResult.toString(),
-                        style: TextStyle(fontSize: 40.0, color: Colors.white),
+                      const SizedBox(
+                        height: 18,
+                      ),
+                      Align(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          child: Text(
+                            finalResult,
+                            style: TextStyle(fontSize: 30.0, color: Colors.white),
+                          ),
+                        ),
+                        alignment: Alignment.bottomRight,
                       ),
                     ],
                   ),
@@ -49,6 +69,7 @@ class _calculatorState extends State<calculator> {
                             onPress: () {
                               setState(() {
                                 userInput = "";
+                                finalResult = "0";
                               });
                             },
                           ),
@@ -204,12 +225,21 @@ class _calculatorState extends State<calculator> {
                           ),
                           mybutton(
                             title: "DEL",
-                            onPress: () {},
+                            onPress: () {
+                              if (userInput != null && userInput.length > 0) {
+                                userInput = userInput.substring(
+                                    0, userInput.length - 1);
+                              }
+                              setState(() {});
+                            },
                           ),
                           mybutton(
                             title: "=",
                             color: Color(0xffffa00a),
-                            onPress: () {},
+                            onPress: () {
+                              calculate();
+                              setState(() {});
+                            },
                           ),
                         ],
                       ),
@@ -222,5 +252,23 @@ class _calculatorState extends State<calculator> {
         ),
       ),
     );
+  }
+
+  void calculate() {
+    final original = userInput;
+    final find = 'x';
+    final replaceWith = '*';
+    final newString = original.replaceAll(find, replaceWith);
+
+    try {
+      Parser p = Parser();
+      Expression exp = p.parse(newString);
+      ContextModel contextModel = ContextModel();
+
+      double eval = exp.evaluate(EvaluationType.REAL, contextModel);
+      finalResult = eval.toStringAsFixed(3);
+    } catch (e) {
+      finalResult = "Invalid Expression";
+    }
   }
 }
