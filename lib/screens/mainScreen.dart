@@ -266,7 +266,7 @@ class _calculatorState extends State<calculator> {
       ContextModel contextModel = ContextModel();
 
       double eval = exp.evaluate(EvaluationType.REAL, contextModel);
-      finalResult = eval.toStringAsFixed(3);
+      finalResult = eval.toStringAsPrecision(3);
     } catch (e) {
       finalResult = "Invalid Expression";
     }
